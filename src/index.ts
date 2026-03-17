@@ -23,13 +23,7 @@ import { AppError } from "./types/appError";
 const app = express();
 // Puerto en el que correrá el servidor (por defecto 3000)
 const PORT = process.env.PORT || 3000;
-const frontendDistPath = path.join(
-  __dirname,
-  "..",
-  "..",
-  "adm-amados",
-  "dist",
-);
+const frontendDistPath = path.join(__dirname, "..", "..", "adm-amados", "dist");
 
 // Middleware para parsear JSON en las solicitudes
 app.use(express.json());
