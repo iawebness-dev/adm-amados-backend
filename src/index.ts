@@ -37,17 +37,30 @@ const defaultAllowedOrigins = [
   "https://adm-amados.vercel.app",
 ];
 
+const normalizeOrigin = (origin: string): string => {
+  try {
+    return new URL(origin).origin;
+  } catch {
+    return origin.replace(/\/+$/, "").trim();
+  }
+};
+
 const allowedOrigins = (
   process.env.CORS_ORIGINS || defaultAllowedOrigins.join(",")
 )
   .split(",")
-  .map((origin) => origin.trim())
+  .map((origin) => normalizeOrigin(origin))
   .filter(Boolean);
+
+const allowedOriginsSet = new Set(allowedOrigins);
 
 app.use((req, res, next) => {
   const requestOrigin = req.headers.origin;
+  const normalizedRequestOrigin = requestOrigin
+    ? normalizeOrigin(requestOrigin)
+    : "";
 
-  if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+  if (requestOrigin && allowedOriginsSet.has(normalizedRequestOrigin)) {
     res.header("Access-Control-Allow-Origin", requestOrigin);
   }
 
