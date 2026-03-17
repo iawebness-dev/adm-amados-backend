@@ -30,8 +30,15 @@ const hasFrontendDist = fs.existsSync(frontendDistPath);
 // Middleware para parsear JSON en las solicitudes
 app.use(express.json());
 
+const defaultAllowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:4173",
+  "https://adm-amados-backend.onrender.com",
+  "https://adm-amados.vercel.app",
+];
+
 const allowedOrigins = (
-  process.env.CORS_ORIGINS || "http://localhost:5173,http://localhost:4173"
+  process.env.CORS_ORIGINS || defaultAllowedOrigins.join(",")
 )
   .split(",")
   .map((origin) => origin.trim())
