@@ -4,7 +4,9 @@ import mongoose from "mongoose";
 // URI de conexión a MongoDB
 // Si no existe en variables de entorno, usa base de datos local
 const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/stock_db";
+  process.env.MONGODB_URI ||
+  process.env.MONGO_URI ||
+  "mongodb://localhost:27017/stock_db";
 
 /**
  * Función para conectar a la base de datos MongoDB

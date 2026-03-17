@@ -1,6 +1,7 @@
 // Cargar variables de entorno desde archivo .env
 import "dotenv/config";
 import express, { Request, Response } from "express";
+import fs from "fs";
 import path from "path";
 
 // Importar rutas específicas de cada módulo
@@ -24,6 +25,7 @@ const app = express();
 // Puerto en el que correrá el servidor (por defecto 3000)
 const PORT = process.env.PORT || 3000;
 const frontendDistPath = path.join(__dirname, "..", "..", "adm-amados", "dist");
+const hasFrontendDist = fs.existsSync(frontendDistPath);
 
 // Middleware para parsear JSON en las solicitudes
 app.use(express.json());
@@ -91,6 +93,10 @@ app.get("/api/saludo", (req: Request, res: Response) => {
   });
 });
 
+app.get("/health", (req: Request, res: Response) => {
+  res.status(200).json({ status: "ok" });
+});
+
 // ========== RUTAS DE API PRINCIPAL ==========
 
 // Rutas para gestionar finanzas
@@ -102,11 +108,13 @@ app.get("/api/test-error", (req, res, next) => {
 });
 
 // ========== FRONTEND MONOLITO ==========
-app.use(express.static(frontendDistPath));
+if (hasFrontendDist) {
+  app.use(express.static(frontendDistPath));
 
-app.get(/^\/(?!api|auth).*/, (req, res) => {
-  res.sendFile(path.join(frontendDistPath, "index.html"));
-});
+  app.get(/^\/(?!api|auth|health).*/, (req, res) => {
+    res.sendFile(path.join(frontendDistPath, "index.html"));
+  });
+}
 
 // ========== MIDDLEWARE DE MANEJO DE ERRORES ==========
 // IMPORTANTE: Debe estar al final para capturar todos los errores

@@ -102,7 +102,10 @@ export const login = async (
 
   // Configurar opciones del token JWT
   const options: SignOptions = {
-    expiresIn: (process.env.JWT_EXPIRES_IN as any) || "1h", // Expira en 1 hora
+    expiresIn:
+      (process.env.JWT_EXPIRES_IN as any) ||
+      (process.env.JWT_EXPIRATION as any) ||
+      "1h", // Expira en 1 hora
     issuer: "curso-utn-backend", // Quién emitió el token
   };
 
